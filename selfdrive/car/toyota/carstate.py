@@ -153,7 +153,7 @@ class CarState(CarStateBase):
       self.low_speed_lockout = False
     else:
       self.v_cruise_pcm = cp.vl["PCM_CRUISE_2"]['SET_SPEED']
-      self.low_speed_lockout = cp.vl["PCM_CRUISE_2"]['LOW_SPEED_LOCKOUT'] == False
+      self.low_speed_lockout = cp.vl["PCM_CRUISE_2"]['LOW_SPEED_LOCKOUT'] == 2
     self.pcm_acc_status = cp.vl["PCM_CRUISE"]['CRUISE_STATE']
     self.pcm_acc_active = bool(cp.vl["PCM_CRUISE"]['CRUISE_ACTIVE'])
     self.brake_lights = bool(cp.vl["ESP_CONTROL"]['BRAKE_LIGHTS_ACC'] or self.brake_pressed)
