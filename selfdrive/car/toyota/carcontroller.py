@@ -131,7 +131,7 @@ class CarController():
       if pcm_cancel_cmd and CS.CP.carFingerprint == CAR.LEXUS_IS:
         can_sends.append(create_acc_cancel_command(self.packer))
       elif CS.CP.openpilotLongitudinalControl:
-        if lead or apply_accel < 0.2:
+        if apply_accel < -0.2:
           self.permit_braking = True
         else:
           self.permit_braking = False
