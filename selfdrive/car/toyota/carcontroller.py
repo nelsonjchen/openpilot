@@ -50,7 +50,6 @@ class CarController():
     self.car_fingerprint = CP.carFingerprint
     self.alert_active = False
     self.last_standstill = False
-    self.permit_braking = True
     self.standstill_req = False
 
     self.last_fault_frame = -200
@@ -131,14 +130,14 @@ class CarController():
       if pcm_cancel_cmd and CS.CP.carFingerprint == CAR.LEXUS_IS:
         can_sends.append(create_acc_cancel_command(self.packer))
       elif CS.CP.openpilotLongitudinalControl:
-        if apply_accel < -0.2:
-          self.permit_braking = True
+        if apply_accel < -0.3:
+          permit_braking = True
         else:
-          self.permit_braking = False
+          permit_braking = False
 
-        can_sends.append(create_accel_command(self.packer, apply_accel, pcm_cancel_cmd, self.standstill_req, lead, int(self.permit_braking)))
+        can_sends.append(create_accel_command(self.packer, apply_accel, pcm_cancel_cmd, self.standstill_req, lead, permit_braking))
       else:
-        can_sends.append(create_accel_command(self.packer, 0, pcm_cancel_cmd, False, lead))
+        can_sends.append(create_accel_command(self.packer, 0, pcm_cancel_cmd, False, lead, True))
 
     if (frame % 2 == 0) and (CS.CP.enableGasInterceptor):
         # send exactly zero if apply_gas is zero. Interceptor will send the max between read value and apply_gas.
