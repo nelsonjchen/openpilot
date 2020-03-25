@@ -35,7 +35,7 @@ def create_accel_command(packer, accel, pcm_cancel, standstill_req, lead, permit
     "MINI_CAR": lead,
     "SET_ME_X3": 3,
     "PERMIT_BRAKING": permit_braking,
-    "RELEASE_STANDSTILL": not standstill_req,
+    "RELEASE_STANDSTILL": False,
     "ACCEL_CMD_ALT": accel,
     "CANCEL_REQ": pcm_cancel,
   }
