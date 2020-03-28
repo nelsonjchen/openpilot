@@ -132,8 +132,10 @@ class CarController():
       elif CS.CP.openpilotLongitudinalControl:
         if lead:
           permit_braking = True
-        if not lead:
+        else:
+          # Floor accel to -0.5 if a lead is not present
           apply_accel = max(-0.5, apply_accel)
+          permit_braking = False
 
         can_sends.append(create_accel_command(self.packer, apply_accel, pcm_cancel_cmd, self.standstill_req, lead, permit_braking))
       else:
