@@ -131,8 +131,8 @@ class CarController():
         can_sends.append(create_acc_cancel_command(self.packer))
       elif CS.CP.openpilotLongitudinalControl:
         # Stub out decel commands on low decels if there's no lead vehicle. Use pure engine braking.
-        if not lead and apply_accel < -1.5:
-          apply_accel = max(0.0, apply_accel)
+        if not lead and (0.0 > apply_accel > -2.0):
+          apply_accel = 0.0
 
         can_sends.append(create_accel_command(self.packer, apply_accel, pcm_cancel_cmd, self.standstill_req, lead))
       else:
