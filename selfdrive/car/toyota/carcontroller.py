@@ -136,6 +136,7 @@ class CarController():
           # Floor accel if a lead is not present
           apply_accel = max(0.0, apply_accel)
           permit_braking = False
+        permit_braking = True
 
         can_sends.append(create_accel_command(self.packer, apply_accel, pcm_cancel_cmd, self.standstill_req, lead, permit_braking))
       else:
