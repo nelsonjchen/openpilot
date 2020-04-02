@@ -130,12 +130,8 @@ class CarController():
       if pcm_cancel_cmd and CS.CP.carFingerprint == CAR.LEXUS_IS:
         can_sends.append(create_acc_cancel_command(self.packer))
       elif CS.CP.openpilotLongitudinalControl:
-        if lead:
-          permit_braking = True
-        else:
-          # Don't decelerate except by coasting if there's no lead car
-          apply_accel = max(0.0, apply_accel)
-          permit_braking = False
+        
+        permit_braking = True
 
         can_sends.append(create_accel_command(self.packer, apply_accel, pcm_cancel_cmd, self.standstill_req, lead, permit_braking))
       else:
