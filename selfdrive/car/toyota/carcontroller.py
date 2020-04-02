@@ -133,8 +133,6 @@ class CarController():
         if lead:
           permit_braking = True
         else:
-          # Don't decelerate except by coasting if there's no lead car
-          apply_accel = max(0.0, apply_accel)
           permit_braking = False
 
         can_sends.append(create_accel_command(self.packer, apply_accel, pcm_cancel_cmd, self.standstill_req, lead, permit_braking))
