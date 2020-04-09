@@ -122,7 +122,7 @@ class Planner():
     long_control_state = sm['controlsState'].longControlState
     v_cruise_kph = sm['controlsState'].vCruise
     force_slow_decel = sm['controlsState'].forceDecel
-    v_cruise_setpoint = v_cruise_kph * CV.KPH_TO_MS
+    v_cruise_setpoint = v_cruise_kph * CV.KPH_TO_MS * 1.05
 
     lead_1 = sm['radarState'].leadOne
     lead_2 = sm['radarState'].leadTwo

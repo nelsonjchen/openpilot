@@ -421,7 +421,7 @@ static void ui_draw_vision_maxspeed(UIState *s) {
   int ui_viz_rw = scene->ui_viz_rw;
 
   char maxspeed_str[32];
-  float maxspeed = s->scene.v_cruise;
+  float maxspeed = s->scene.v_cruise * 1.05;
   int maxspeed_calc = maxspeed * 0.6225 + 0.5;
   float speedlimit = s->scene.speedlimit;
   int speedlim_calc = speedlimit * 2.2369363 + 0.5;
