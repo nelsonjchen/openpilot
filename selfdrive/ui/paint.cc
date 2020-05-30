@@ -386,6 +386,7 @@ static void ui_draw_vision_maxspeed(UIState *s) {
   }*/
   char maxspeed_str[32];
   float maxspeed = s->scene.controls_state.getVCruise();
+  maxspeed = maxspeed * 1.017;
   int maxspeed_calc = maxspeed * 0.6225 + 0.5;
   float speedlimit = s->scene.speedlimit;
   int speedlim_calc = speedlimit * 2.2369363 + 0.5;

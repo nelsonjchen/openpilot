@@ -116,7 +116,7 @@ class Planner():
     v_ego = sm['carState'].vEgo
 
     long_control_state = sm['controlsState'].longControlState
-    v_cruise_kph = sm['controlsState'].vCruise
+    v_cruise_kph = sm['controlsState'].vCruise * 1.017
     force_slow_decel = sm['controlsState'].forceDecel
 
     v_cruise_kph = min(v_cruise_kph, V_CRUISE_MAX)
