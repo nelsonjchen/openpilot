@@ -8,15 +8,14 @@ from selfdrive.car.interfaces import CarInterfaceBase
 
 # mocked car interface to work with chffrplus
 TS = 0.01  # 100Hz
-YAW_FR = 0.2 # ~0.8s time constant on yaw rate filter
+YAW_FR = 0.2  # ~0.8s time constant on yaw rate filter
 # low pass gain
 LPG = 2 * 3.1415 * YAW_FR * TS / (1 + 2 * 3.1415 * YAW_FR * TS)
 
 
 class CarInterface(CarInterfaceBase):
   def __init__(self, CP, CarController, CarState):
-    self.CP = CP
-    self.CC = CarController
+    super().__init__(CP, CarController, CarState)
 
     cloudlog.debug("Using Mock Car Interface")
 
@@ -34,7 +33,7 @@ class CarInterface(CarInterfaceBase):
     return accel
 
   @staticmethod
-  def get_params(candidate, fingerprint=gen_empty_fingerprint(), has_relay=False, car_fw=[]):
+  def get_params(candidate, fingerprint=gen_empty_fingerprint(), has_relay=False, car_fw=[]):  # pylint: disable=dangerous-default-value
     ret = CarInterfaceBase.get_std_params(candidate, fingerprint, has_relay)
     ret.carName = "mock"
     ret.safetyModel = car.CarParams.SafetyModel.noOutput
@@ -42,7 +41,7 @@ class CarInterface(CarInterfaceBase):
     ret.rotationalInertia = 2500.
     ret.wheelbase = 2.70
     ret.centerToFront = ret.wheelbase * 0.5
-    ret.steerRatio = 13. # reasonable
+    ret.steerRatio = 13.  # reasonable
     ret.tireStiffnessFront = 1e6    # very stiff to neglect slip
     ret.tireStiffnessRear = 1e6     # very stiff to neglect slip
 
@@ -73,13 +72,13 @@ class CarInterface(CarInterfaceBase):
     ret.aEgo = a
     ret.brakePressed = a < -0.5
 
-    self.yawRate = LPG * self.yaw_rate_meas + (1. - LPG) * self.yaw_rate
-    ret.yawRate = self.yaw_rate
     ret.standstill = self.speed < 0.01
     ret.wheelSpeeds.fl = self.speed
     ret.wheelSpeeds.fr = self.speed
     ret.wheelSpeeds.rl = self.speed
     ret.wheelSpeeds.rr = self.speed
+
+    self.yawRate = LPG * self.yaw_rate_meas + (1. - LPG) * self.yaw_rate
     curvature = self.yaw_rate / max(self.speed, 1.)
     ret.steeringAngle = curvature * self.CP.steerRatio * self.CP.wheelbase * CV.RAD_TO_DEG
 

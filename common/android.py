@@ -12,6 +12,10 @@ NetworkStrength = log.ThermalData.NetworkStrength
 
 ANDROID = os.path.isfile('/EON')
 
+def get_sound_card_online():
+  return (os.path.isfile('/proc/asound/card0/state') and
+          open('/proc/asound/card0/state').read().strip() == 'ONLINE')
+
 def getprop(key):
   if not ANDROID:
     return ""
@@ -22,10 +26,10 @@ def get_imei(slot):
   if slot not in ("0", "1"):
     raise ValueError("SIM slot must be 0 or 1")
 
-  ret = parse_service_call_string(service_call(["iphonesubinfo", "3" ,"i32", str(slot)]))
+  ret = parse_service_call_string(service_call(["iphonesubinfo", "3" , "i32", str(slot)]))
   if not ret:
     # allow non android to be identified differently
-    ret = "%015d" % random.randint(0, 1<<32)
+    ret = "%015d" % random.randint(0, 1 << 32)
   return ret
 
 def get_serial():
@@ -47,10 +51,10 @@ def reboot(reason=None):
     reason_args = ["s16", reason]
 
   subprocess.check_output([
-    "service", "call", "power", "16", # IPowerManager.reboot
-    "i32", "0", # no confirmation,
+    "service", "call", "power", "16",  # IPowerManager.reboot
+    "i32", "0",  # no confirmation,
     *reason_args,
-    "i32", "1" # wait
+    "i32", "1"  # wait
   ])
 
 def service_call(call):
@@ -71,7 +75,7 @@ def parse_service_call_unpack(r, fmt):
 
 def parse_service_call_string(r):
   try:
-    r = r[8:] # Cut off length field
+    r = r[8:]  # Cut off length field
     r = r.decode('utf_16_be')
 
     # All pairs of two characters seem to be swapped. Not sure why
@@ -132,11 +136,10 @@ def get_network_type():
 
 def get_network_strength(network_type):
   network_strength = NetworkStrength.unknown
+
   # from SignalStrength.java
   def get_lte_level(rsrp, rssnr):
     INT_MAX = 2147483647
-    lvl_rsrp = NetworkStrength.unknown
-    lvl_rssnr = NetworkStrength.unknown
     if rsrp == INT_MAX:
       lvl_rsrp = NetworkStrength.unknown
     elif rsrp >= -95:
@@ -174,7 +177,6 @@ def get_network_strength(network_type):
     return lvl
 
   def get_gsm_level(asu):
-    lvl = NetworkStrength.unknown
     if asu <= 2 or asu == 99:
       lvl = NetworkStrength.unknown
     elif asu >= 12:
@@ -232,7 +234,7 @@ def get_network_strength(network_type):
   if network_type == NetworkType.none:
     return network_strength
   if network_type == NetworkType.wifi:
-    out = subprocess.check_output('dumpsys connectivity', shell=True).decode('ascii')
+    out = subprocess.check_output('dumpsys connectivity', shell=True).decode('utf-8')
     network_strength = NetworkStrength.unknown
     for line in out.split('\n'):
       signal_str = "SignalStrength: "
@@ -251,7 +253,7 @@ def get_network_strength(network_type):
     return network_strength
   else:
     # check cell strength
-    out = subprocess.check_output('dumpsys telephony.registry', shell=True).decode('ascii')
+    out = subprocess.check_output('dumpsys telephony.registry', shell=True).decode('utf-8')
     for line in out.split('\n'):
       if "mSignalStrength" in line:
         arr = line.split(' ')

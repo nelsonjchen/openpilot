@@ -6,7 +6,6 @@ from opendbc.can.packer import CANPacker
 
 class CarController():
   def __init__(self, dbc_name, CP, VM):
-    self.braking = False
     self.apply_steer_last = 0
     self.ccframe = 0
     self.prev_frame = -1
@@ -17,7 +16,6 @@ class CarController():
     self.steer_rate_limited = False
 
     self.packer = CANPacker(dbc_name)
-
 
   def update(self, enabled, CS, actuators, pcm_cancel_cmd, hud_alert):
     # this seems needed to avoid steering faults and to force the sync with the EPS counter
@@ -51,7 +49,7 @@ class CarController():
 
     if pcm_cancel_cmd:
       # TODO: would be better to start from frame_2b3
-      new_msg = create_wheel_buttons(self.ccframe)
+      new_msg = create_wheel_buttons(self.packer, self.ccframe, cancel=True)
       can_sends.append(new_msg)
 
     # LKAS_HEARTBIT is forwarded by Panda so no need to send it here.
