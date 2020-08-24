@@ -496,8 +496,9 @@ class Controls:
     controlsState.forceDecel = bool(force_decel)
     controlsState.canErrorCounter=self.can_error_counter
 
-    # Report Smear/Scale according to car parameter's cruiseStateSpeedScalar
-    controlsState.vCruise = controlsState.vCruise * self.CP.cruiseStateSpeedScalar
+    # Report Smear/Scale according to car parameter's cruiseStateSpeedScalar if larger than no speed
+    if controlsState.vCruise > 5.0:
+      controlsState.vCruise = controlsState.vCruise * self.CP.cruiseStateSpeedScalar
 
     if self.CP.lateralTuning.which() == 'pid':
       controlsState.lateralControlState.pidState = lac_log
