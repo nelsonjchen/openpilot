@@ -494,7 +494,10 @@ class Controls:
     controlsState.startMonoTime = int(start_time * 1e9)
     controlsState.mapValid = self.sm['plan'].mapValid
     controlsState.forceDecel = bool(force_decel)
-    controlsState.canErrorCounter = self.can_error_counter
+    controlsState.canErrorCounter=self.can_error_counter
+
+    # Report Smear/Scale according to car parameter's cruiseStateSpeedScalar
+    controlsState.vCruise = controlsState.vCruise * self.CP.cruiseStateSpeedScalar
 
     if self.CP.lateralTuning.which() == 'pid':
       controlsState.lateralControlState.pidState = lac_log
