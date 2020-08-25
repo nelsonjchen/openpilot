@@ -496,7 +496,7 @@ class Controls:
     controlsState.forceDecel = bool(force_decel)
     controlsState.canErrorCounter=self.can_error_counter
 
-    # Report Smear/Scale according to car parameter's cruiseStateSpeedScalar if larger than no speed
+    # Report Smear/Scale according to car parameter's cruiseStateSpeedScalar if cruise speed was set
     if self.v_cruise_kph != 255:
       controlsState.vCruise = controlsState.vCruise * self.CP.cruiseStateSpeedScalar
 
