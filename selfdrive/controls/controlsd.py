@@ -276,7 +276,10 @@ class Controls:
     if not self.CP.enableCruise:
       self.v_cruise_kph = update_v_cruise(self.v_cruise_kph, CS.buttonEvents, self.enabled)
     elif self.CP.enableCruise and CS.cruiseState.enabled:
-      self.v_cruise_kph = CS.cruiseState.speed * CV.MS_TO_KPH
+      self.v_cruise_kph = CS.cruiseState.speed * \
+                          self.CP.cruiseStateSpeedFactor * \
+                          CV.MS_TO_KPH
+
 
     # decrease the soft disable timer at every step, as it's reset on
     # entrance in SOFT_DISABLING state
@@ -495,10 +498,6 @@ class Controls:
     controlsState.mapValid = self.sm['plan'].mapValid
     controlsState.forceDecel = bool(force_decel)
     controlsState.canErrorCounter=self.can_error_counter
-
-    # Report Smear/Scale according to car parameter's cruiseStateSpeedFactor if cruise speed was set
-    if self.v_cruise_kph != 255:
-      controlsState.vCruise = controlsState.vCruise * self.CP.cruiseStateSpeedFactor
 
     if self.CP.lateralTuning.which() == 'pid':
       controlsState.lateralControlState.pidState = lac_log
