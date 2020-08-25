@@ -80,7 +80,7 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 4387. * CV.LB_TO_KG + STD_CARGO_KG
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.6], [0.05]]
       ret.lateralTuning.pid.kf = 0.00006
-      ret.cruiseStateSpeedScalar = 0.974
+      ret.cruiseStateSpeedFactor = 0.974
 
     elif candidate == CAR.LEXUS_RXH:
       stop_and_go = True
@@ -91,7 +91,7 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 4481. * CV.LB_TO_KG + STD_CARGO_KG  # mean between min and max
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.6], [0.1]]
       ret.lateralTuning.pid.kf = 0.00006  # full torque for 10 deg at 80mph means 0.00007818594
-      ret.cruiseStateSpeedScalar = 0.974
+      ret.cruiseStateSpeedFactor = 0.974
 
     elif candidate == CAR.LEXUS_RX_TSS2:
       stop_and_go = True
@@ -102,7 +102,7 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 4387. * CV.LB_TO_KG + STD_CARGO_KG
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.6], [0.1]]
       ret.lateralTuning.pid.kf = 0.00007818594
-      ret.cruiseStateSpeedScalar = 0.974
+      ret.cruiseStateSpeedFactor = 0.974
 
     elif candidate == CAR.LEXUS_RXH_TSS2:
       stop_and_go = True
@@ -113,7 +113,7 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 4481.0 * CV.LB_TO_KG + STD_CARGO_KG  # mean between min and max
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.6], [0.15]]
       ret.lateralTuning.pid.kf = 0.00007818594
-      ret.cruiseStateSpeedScalar = 0.974
+      ret.cruiseStateSpeedFactor = 0.974
 
     elif candidate in [CAR.CHR, CAR.CHRH]:
       stop_and_go = True
@@ -206,7 +206,7 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 3060. * CV.LB_TO_KG + STD_CARGO_KG
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.6], [0.1]]
       ret.lateralTuning.pid.kf = 0.00007818594
-      ret.cruiseStateSpeedScalar = 1.017
+      ret.cruiseStateSpeedFactor = 1.017
 
     elif candidate in [CAR.LEXUS_ES_TSS2, CAR.LEXUS_ESH_TSS2]:
       stop_and_go = True
