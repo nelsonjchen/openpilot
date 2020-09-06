@@ -1199,7 +1199,7 @@ FW_VERSIONS = {
     ],
   },
   CAR.PRIUS_TSS2: {
-    (Ecu.engine, 0x7e0, None): [
+    (Ecu.engine, 0x700, None): [
       b'\x038966347C1000\x00\x00\x00\x008966A4703000\x00\x00\x00\x00897CF4710101\x00\x00\x00\x00',
     ],
     (Ecu.esp, 0x7b0, None): [
