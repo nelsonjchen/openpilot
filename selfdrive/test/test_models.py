@@ -55,6 +55,9 @@ class TestCarModel(unittest.TestCase):
 
   @classmethod
   def setUpClass(cls):
+    if cls.car_model != TOYOTA.LEXUS_ISH:
+        raise unittest.SkipTest
+
     if cls.car_model not in ROUTES:
       # TODO: get routes for missing cars and remove this
       if cls.car_model in non_tested_cars:
