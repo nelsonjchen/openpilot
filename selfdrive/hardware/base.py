@@ -51,6 +51,10 @@ class HardwareBase:
     pass
 
   @abstractmethod
+  def get_network_info(self):
+    pass
+
+  @abstractmethod
   def get_network_type(self):
     pass
 
@@ -100,4 +104,12 @@ class HardwareBase:
 
   @abstractmethod
   def get_thermal_config(self):
+    pass
+
+  @abstractmethod
+  def set_screen_brightness(self, percentage):
+    pass
+
+  @abstractmethod
+  def set_power_save(self, enabled):
     pass

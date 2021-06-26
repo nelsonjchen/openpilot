@@ -1,11 +1,11 @@
 #pragma once
 
-#include <ctime>
+#include <atomic>
 #include <cstdint>
-#include <pthread.h>
+#include <ctime>
 #include <mutex>
-#include <vector>
 #include <optional>
+#include <vector>
 
 #include <libusb-1.0/libusb.h>
 
@@ -33,12 +33,12 @@ struct __attribute__((packed)) health_t {
   uint8_t car_harness_status;
   uint8_t usb_power_mode;
   uint8_t safety_model;
+  int16_t safety_param;
   uint8_t fault_status;
   uint8_t power_save_enabled;
+  uint8_t heartbeat_lost;
 };
 
-
-void panda_set_power(bool power);
 
 class Panda {
  private:
@@ -53,8 +53,8 @@ class Panda {
   ~Panda();
 
   std::atomic<bool> connected = true;
+  std::atomic<bool> comms_healthy = true;
   cereal::PandaState::PandaType hw_type = cereal::PandaState::PandaType::UNKNOWN;
-  bool is_pigeon = false;
   bool has_rtc = false;
 
   // HW communication
