@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from opendbc.can.parser import CANParser
 from cereal import car
-from selfdrive.car.toyota.values import NO_DSU_CAR, DBC, TSS2_CAR
+from selfdrive.car.toyota.values import NO_DSU_CAR, DBC, TSS2_CAR, TSS2_2022_RADAR_CAR
 from selfdrive.car.interfaces import RadarInterfaceBase
 
 def _create_radar_can_parser(car_fingerprint):
@@ -27,6 +27,12 @@ def _create_radar_can_parser(car_fingerprint):
 class RadarInterface(RadarInterfaceBase):
   def __init__(self, CP):
     super().__init__(CP)
+
+    # These radars have not been decoded yet. Forgoe radar.
+    if CP.carFingerprint in TSS2_2022_RADAR_CAR:
+      self.no_radar = True
+      return
+
     self.track_id = 0
     self.radar_ts = CP.radarTimeStep
 
