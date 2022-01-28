@@ -28,7 +28,7 @@ class RadarInterface(RadarInterfaceBase):
   def __init__(self, CP):
     super().__init__(CP)
 
-    # These radars have not been decoded yet. Forgoe radar.
+    # These radars have not been decoded yet. Forgo radar for now.
     if CP.carFingerprint in TSS2_2022_RADAR_CAR:
       self.no_radar = True
       return
