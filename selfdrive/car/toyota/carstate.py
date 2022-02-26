@@ -112,7 +112,7 @@ class CarState(CarStateBase):
     ret.cruiseState.nonAdaptive = cp.vl["PCM_CRUISE"]["CRUISE_STATE"] in (1, 2, 3, 4, 5, 6)
 
     ret.genericToggle = bool(cp.vl["LIGHT_STALK"]["AUTO_HIGH_BEAM"])
-    ret.stockAeb = bool(cp_cam.vl["PRE_COLLISION"]["PRECOLLISION_ACTIVE"] and cp_cam.vl["PRE_COLLISION"]["FORCE"] < -1e-5)
+    # ret.stockAeb = bool(cp_cam.vl["PRE_COLLISION"]["PRECOLLISION_ACTIVE"] and cp_cam.vl["PRE_COLLISION"]["FORCE"] < -1e-5)
 
     ret.espDisabled = cp.vl["ESP_CONTROL"]["TC_DISABLED"] != 0
     # 2 is standby, 10 is active. TODO: check that everything else is really a faulty state
@@ -207,8 +207,8 @@ class CarState(CarStateBase):
   @staticmethod
   def get_cam_can_parser(CP):
     signals = [
-      ("FORCE", "PRE_COLLISION"),
-      ("PRECOLLISION_ACTIVE", "PRE_COLLISION"),
+      # ("FORCE", "PRE_COLLISION"),
+      # ("PRECOLLISION_ACTIVE", "PRE_COLLISION"),
     ]
 
     # use steering message to check if panda is connected to frc
