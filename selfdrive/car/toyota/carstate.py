@@ -213,8 +213,8 @@ class CarState(CarStateBase):
 
     # use steering message to check if panda is connected to frc
     checks = [
-      ("STEERING_LKA", 42),
-      ("PRE_COLLISION", 0), # TODO: figure out why freq is inconsistent
+      # ("STEERING_LKA", 42),
+      # ("PRE_COLLISION", 0), # TODO: figure out why freq is inconsistent
     ]
 
     if CP.carFingerprint in TSS2_CAR:
