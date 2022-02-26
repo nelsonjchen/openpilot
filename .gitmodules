@@ -1,6 +1,7 @@
 [submodule "panda"]
 	path = panda
 	url = https://github.com/zorrobyte/panda.git
+	branch = stock_tss2_cruise
 [submodule "opendbc"]
 	path = opendbc
 	url = ../../commaai/opendbc.git
