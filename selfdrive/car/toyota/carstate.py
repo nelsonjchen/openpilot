@@ -217,8 +217,8 @@ class CarState(CarStateBase):
       # ("PRE_COLLISION", 0), # TODO: figure out why freq is inconsistent
     ]
 
-    if CP.carFingerprint in TSS2_CAR:
-      signals.append(("ACC_TYPE", "ACC_CONTROL"))
-      checks.append(("ACC_CONTROL", 33))
+    # if CP.carFingerprint in TSS2_CAR:
+    #   signals.append(("ACC_TYPE", "ACC_CONTROL"))
+    #   checks.append(("ACC_CONTROL", 33))
 
     return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, 2, enforce_checks=False)
