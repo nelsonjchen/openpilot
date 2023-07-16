@@ -26,6 +26,9 @@ widgets_src = ["ui.cc", "qt/widgets/input.cc", "qt/widgets/drive_stats.cc", "qt/
                "qt/widgets/scrollview.cc", "qt/widgets/cameraview.cc", "#third_party/qrcode/QrCode.cc",
                "qt/request_repeater.cc", "qt/qt_window.cc", "qt/offroad/networking.cc", "qt/offroad/wifiManager.cc"]
 
+# See through view
+widgets_src.append("qt/widgets/seethrucameraview.cc")
+
 qt_env['CPPDEFINES'] = []
 if maps:
   base_libs += ['qmapboxgl']
@@ -132,3 +135,6 @@ if GetOption('extras'):
 # build watch3
 if arch in ['x86_64', 'Darwin'] or GetOption('extras'):
   qt_env.Program("watch3", ["watch3.cc"], LIBS=qt_libs + ['common', 'json11', 'zmq', 'visionipc', 'messaging'])
+
+seethru_src = ["seethru.cc"]
+qt_env.Program("seethru", seethru_src, LIBS=qt_libs + ['common', 'json11'])
