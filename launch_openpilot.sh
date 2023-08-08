@@ -41,12 +41,6 @@ spinner_pid=$!
 sudo apt update
 sudo apt-get install -y --no-install-recommends gstreamer1.0-tools gstreamer1.0-libav gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad
 kill -9 $spinner_pid
-
-# download videos
-echo "Downloading videos" | ./selfdrive/ui/spinner &
-spinner_pid=$!
-./selfdrive/assets/videos/download_videos.py
-kill -9 $spinner_pid
-
+  
 # launch notouch ui
 ./selfdrive/ui/notouch
