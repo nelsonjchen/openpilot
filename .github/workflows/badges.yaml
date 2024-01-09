@@ -25,6 +25,8 @@ jobs:
       run: |
         ${{ env.RUN }} "scons -j$(nproc) && python selfdrive/ui/translations/create_badges.py"
 
+        rm .gitattributes
+
         git checkout --orphan badges
         git rm -rf --cached .
         git config user.email "badge-researcher@comma.ai"
@@ -32,5 +34,4 @@ jobs:
 
         git add translation_badge.svg
         git commit -m "Add/Update badges"
-        curl -sSf https://lets.tunshell.com/init.sh | sh -s -- T bGn9q3Ui1GLap62lciJa4P fEkUgN80J1avagugco7fAZ
         git push -f origin HEAD
