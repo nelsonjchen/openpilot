@@ -13,7 +13,7 @@ jobs:
   badges:
     name: create badges
     runs-on: ubuntu-20.04
-    if: github.repository == 'commaai/openpilot'
+    if: github.repository == 'nelsonjchen/openpilot'
     permissions:
       contents: write
     steps:
