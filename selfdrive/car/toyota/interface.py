@@ -2,6 +2,7 @@ from cereal import car
 from panda import Panda
 from panda.python import uds
 from openpilot.common.params import Params
+from openpilot.common.swaglog import cloudlog
 from openpilot.selfdrive.car.toyota.values import Ecu, CAR, DBC, ToyotaFlags, CarControllerParams, TSS2_CAR, RADAR_ACC_CAR, NO_DSU_CAR, \
                                         MIN_ACC_SPEED, EPS_SCALE, UNSUPPORTED_DSU_CAR, NO_STOP_TIMER_CAR, ANGLE_CONTROL_CAR
 from openpilot.selfdrive.car import create_button_events, get_safety_config
@@ -157,8 +158,13 @@ class CarInterface(CarInterfaceBase):
     # Read SecOC key from param
     if ret.flags & ToyotaFlags.SECOC.value:
       key = Params().get("SecOCKey", encoding='utf8')
-      assert (key is not None) and (len(key) == 32) # TODO: Show proper alert about missing key
-      ret.secOCKey = bytes.fromhex(key)
+
+      # TODO: show warning, and handle setting key in CI
+      if key is None:
+        cloudlog.warning("SecOCKey is not set")
+        key = "0" * 32
+
+      ret.secOCKey = bytes.fromhex(key.strip())
 
     tune = ret.longitudinalTuning
     tune.deadzoneBP = [0., 9.]
