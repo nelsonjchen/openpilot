@@ -103,7 +103,7 @@ class CarState(CarStateBase):
     ret.leftBlinker = cp.vl["BLINKERS_STATE"]["TURN_SIGNALS"] == 1
     ret.rightBlinker = cp.vl["BLINKERS_STATE"]["TURN_SIGNALS"] == 2
 
-    if self.CP.carFingerprint != CAR.MIRAI:
+    if self.CP.carFingerprint not in [CAR.MIRAI, CAR.RAV4_PRIME]:
       ret.engineRpm = cp.vl["ENGINE_RPM"]["RPM"]
 
     ret.steeringTorque = cp.vl["STEER_TORQUE_SENSOR"]["STEER_TORQUE_DRIVER"]
@@ -209,7 +209,7 @@ class CarState(CarStateBase):
     else:
       messages.append(("GEAR_PACKET", 1))
 
-    if CP.carFingerprint != CAR.MIRAI:
+    if CP.carFingerprint not in [CAR.MIRAI, CAR.RAV4_PRIME]:
       messages.append(("ENGINE_RPM", 42))
 
     if CP.carFingerprint in UNSUPPORTED_DSU_CAR:
