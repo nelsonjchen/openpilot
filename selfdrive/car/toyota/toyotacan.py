@@ -1,6 +1,40 @@
+import struct
+
+from Crypto.Hash import CMAC
+from Crypto.Cipher import AES
+
 from cereal import car
 
 SteerControlType = car.CarParams.SteerControlType
+
+def secoc_add_cmac(key, trip_cnt, reset_cnt, msg_cnt, msg):
+  # TODO: clean up conversion to and from hex
+
+  addr, t, payload, bus = msg
+  reset_flag = reset_cnt & 0b11
+  msg_cnt_flag = msg_cnt & 0b11
+  payload = payload[:4]
+
+  # Step 1: Build Freshness Value (48 bits)
+  # [Trip Counter (16 bit)][[Reset Counter (20 bit)][Message Counter (8 bit)][Reset Flag (2 bit)][Padding (2 bit)]
+  freshness_value = struct.pack('>HI', trip_cnt, (reset_cnt << 12) | ((msg_cnt & 0xff) << 4) | (reset_flag << 2))
+
+  # Step 2: Build data to authenticate (96 bits)
+  # [Message ID (16 bits)][Payload (32 bits)][Freshness Value (48 bits)]
+  to_auth = struct.pack('>H', addr) + payload + freshness_value
+
+  # Step 3: Calculate CMAC (28 bit)
+  cmac = CMAC.new(key, ciphermod=AES)
+  cmac.update(to_auth)
+  mac = cmac.digest().hex()[:7] # truncated MAC
+
+  # Step 4: Build message
+  # [Payload (32 bit)][Message Counter Flag (2 bit)][Reset Flag (2 bit)][Authenticator (28 bit)]
+  msg_cnt_rst_flag = struct.pack('>B', (msg_cnt_flag << 2) | reset_flag).hex()[1]
+  msg = payload.hex() + msg_cnt_rst_flag + mac
+  payload = bytes.fromhex(msg)
+
+  return (addr, t, payload, bus)
 
 
 def create_steer_command(packer, steer, steer_req):
@@ -32,6 +66,11 @@ def create_lta_steer_command(packer, steer_control_type, steer_angle, steer_req,
   }
   return packer.make_can_msg("STEERING_LTA", 0, values)
 
+def create_lta_steer_command_2(packer, frame):
+  values = {
+    "COUNTER": frame + 128,
+  }
+  return packer.make_can_msg("STEERING_LTA_2", 0, values)
 
 def create_accel_command(packer, accel, pcm_cancel, standstill_req, lead, acc_type, fcw_alert, distance):
   # TODO: find the exact canceling bit that does not create a chime

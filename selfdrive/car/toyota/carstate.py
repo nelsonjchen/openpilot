@@ -29,10 +29,14 @@ class CarState(CarStateBase):
   def __init__(self, CP):
     super().__init__(CP)
     can_define = CANDefine(DBC[CP.carFingerprint]["pt"])
-    self.shifter_values = can_define.dv["GEAR_PACKET"]["GEAR"]
     self.eps_torque_scale = EPS_SCALE[CP.carFingerprint] / 100.
     self.cluster_speed_hyst_gap = CV.KPH_TO_MS / 2.
     self.cluster_min_speed = CV.KPH_TO_MS / 2.
+
+    if CP.flags & ToyotaFlags.GEAR_PACKET_HYBRID.value:
+      self.shifter_values = can_define.dv["GEAR_PACKET"]["GEAR"]
+    else:
+      self.shifter_values = can_define.dv["GEAR_PACKET_HYBRID"]["GEAR"]
 
     # On cars with cp.vl["STEER_TORQUE_SENSOR"]["STEER_ANGLE"]
     # the signal is zeroed to where the steering angle is at start.
@@ -91,7 +95,10 @@ class CarState(CarStateBase):
         ret.steeringAngleOffsetDeg = self.angle_offset.x
         ret.steeringAngleDeg = torque_sensor_angle_deg - self.angle_offset.x
 
-    can_gear = int(cp.vl["GEAR_PACKET"]["GEAR"])
+    if self.CP.flags & ToyotaFlags.GEAR_PACKET_HYBRID.value:
+      can_gear = int(cp.vl["GEAR_PACKET_HYBRID"]["GEAR"])
+    else:
+      can_gear = int(cp.vl["GEAR_PACKET"]["GEAR"])
     ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(can_gear, None))
     ret.leftBlinker = cp.vl["BLINKERS_STATE"]["TURN_SIGNALS"] == 1
     ret.rightBlinker = cp.vl["BLINKERS_STATE"]["TURN_SIGNALS"] == 2
@@ -154,7 +161,7 @@ class CarState(CarStateBase):
     ret.genericToggle = bool(cp.vl["LIGHT_STALK"]["AUTO_HIGH_BEAM"])
     ret.espDisabled = cp.vl["ESP_CONTROL"]["TC_DISABLED"] != 0
 
-    if not self.CP.enableDsu and not self.CP.flags & ToyotaFlags.DISABLE_RADAR.value:
+    if not self.CP.enableDsu and not self.CP.flags & ToyotaFlags.DISABLE_RADAR.value and not self.CP.flags & ToyotaFlags.SECOC.value:
       ret.stockAeb = bool(cp_acc.vl["PRE_COLLISION"]["PRECOLLISION_ACTIVE"] and cp_acc.vl["PRE_COLLISION"]["FORCE"] < -1e-5)
 
     if self.CP.enableBsm:
@@ -175,12 +182,14 @@ class CarState(CarStateBase):
       else:
         self.distance_button = cp.vl["SDSU"]["FD_BUTTON"]
 
+    if self.CP.flags & ToyotaFlags.SECOC.value:
+      self.secoc_synchronization = copy.copy(cp.vl["SECOC_SYNCHRONIZATION"])
+
     return ret
 
   @staticmethod
   def get_can_parser(CP):
     messages = [
-      ("GEAR_PACKET", 1),
       ("LIGHT_STALK", 1),
       ("BLINKERS_STATE", 0.15),
       ("BODY_CONTROL_STATE", 3),
@@ -194,6 +203,11 @@ class CarState(CarStateBase):
       ("PCM_CRUISE_SM", 1),
       ("STEER_TORQUE_SENSOR", 50),
     ]
+
+    if CP.flags & ToyotaFlags.GEAR_PACKET_HYBRID.value:
+      messages.append(("GEAR_PACKET_HYBRID", 60))
+    else:
+      messages.append(("GEAR_PACKET", 1))
 
     if CP.carFingerprint != CAR.MIRAI:
       messages.append(("ENGINE_RPM", 42))
@@ -226,6 +240,11 @@ class CarState(CarStateBase):
         ("SDSU", 100),
       ]
 
+    if CP.flags & ToyotaFlags.SECOC.value:
+      messages += [
+        ("SECOC_SYNCHRONIZATION", 10),
+      ]
+
     return CANParser(DBC[CP.carFingerprint]["pt"], messages, 0)
 
   @staticmethod
@@ -239,9 +258,14 @@ class CarState(CarStateBase):
 
     if CP.carFingerprint in (TSS2_CAR - RADAR_ACC_CAR):
       messages += [
-        ("PRE_COLLISION", 33),
         ("ACC_CONTROL", 33),
         ("PCS_HUD", 1),
       ]
+
+      # TODO: Figure out new layout of the PRE_COLLISION message
+      if not CP.flags & ToyotaFlags.SECOC.value:
+        messages += [
+          ("PRE_COLLISION", 33),
+        ]
 
     return CANParser(DBC[CP.carFingerprint]["pt"], messages, 2)
