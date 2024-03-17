@@ -140,7 +140,10 @@ class CarInterface(CarInterfaceBase):
     if ret.flags & ToyotaFlags.SECOC.value: # Lateral only for now
       ret.openpilotLongitudinalControl = False
     else:
-      ret.openpilotLongitudinalControl = use_sdsu or ret.enableDsu or candidate in (TSS2_CAR - RADAR_ACC_CAR) or bool(ret.flags & ToyotaFlags.DISABLE_RADAR.value)
+      ret.openpilotLongitudinalControl = use_sdsu or \
+        ret.enableDsu or \
+        candidate in (TSS2_CAR - RADAR_ACC_CAR) or \
+        bool(ret.flags & ToyotaFlags.DISABLE_RADAR.value)
 
     ret.autoResumeSng = ret.openpilotLongitudinalControl and candidate in NO_STOP_TIMER_CAR
 
