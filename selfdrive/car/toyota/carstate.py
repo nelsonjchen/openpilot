@@ -102,6 +102,10 @@ class CarState(CarStateBase):
     else:
       can_gear = int(cp.vl["GEAR_PACKET"]["GEAR"])
     ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(can_gear, None))
+
+    # Hardcode until all gear values are known
+    ret.gearShifter = car.CarState.GearShifter.drive
+
     ret.leftBlinker = cp.vl["BLINKERS_STATE"]["TURN_SIGNALS"] == 1
     ret.rightBlinker = cp.vl["BLINKERS_STATE"]["TURN_SIGNALS"] == 2
 
