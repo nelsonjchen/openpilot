@@ -48,6 +48,7 @@ class CarState(CarStateBase):
     self.distance_button = 0
 
     self.pcm_follow_distance = 0
+    self.pcm_acc_status = 0
 
     self.low_speed_lockout = False
     self.acc_type = 1
@@ -64,7 +65,8 @@ class CarState(CarStateBase):
     ret.brakePressed = cp.vl["BRAKE_MODULE"]["BRAKE_PRESSED"] != 0
     ret.brakeHoldActive = cp.vl["ESP_CONTROL"]["BRAKE_HOLD_ACTIVE"] == 1
 
-    ret.gasPressed = cp.vl["PCM_CRUISE"]["GAS_RELEASED"] == 0
+    if self.CP.carFingerprint not in [CAR.RAV4_PRIME]:
+      ret.gasPressed = cp.vl["PCM_CRUISE"]["GAS_RELEASED"] == 0
 
     ret.wheelSpeeds = self.get_wheel_speeds(
       cp.vl["WHEEL_SPEEDS"]["WHEEL_SPEED_FL"],
@@ -151,12 +153,16 @@ class CarState(CarStateBase):
        (self.CP.carFingerprint in TSS2_CAR and self.acc_type == 1):
       self.low_speed_lockout = cp.vl["PCM_CRUISE_2"]["LOW_SPEED_LOCKOUT"] == 2
 
-    self.pcm_acc_status = cp.vl["PCM_CRUISE"]["CRUISE_STATE"]
-    if self.CP.carFingerprint not in (NO_STOP_TIMER_CAR - TSS2_CAR):
-      # ignore standstill state in certain vehicles, since pcm allows to restart with just an acceleration request
-      ret.cruiseState.standstill = self.pcm_acc_status == 7
+    if self.CP.carFingerprint not in [CAR.RAV4_PRIME]:
+      self.pcm_acc_status = cp.vl["PCM_CRUISE"]["CRUISE_STATE"]
+      if self.CP.carFingerprint not in (NO_STOP_TIMER_CAR - TSS2_CAR):
+        # ignore standstill state in certain vehicles, since pcm allows to restart with just an acceleration request
+        ret.cruiseState.standstill = self.pcm_acc_status == 7
+
     ret.cruiseState.enabled = bool(cp.vl["PCM_CRUISE"]["CRUISE_ACTIVE"])
-    ret.cruiseState.nonAdaptive = cp.vl["PCM_CRUISE"]["CRUISE_STATE"] in (1, 2, 3, 4, 5, 6)
+
+    if self.CP.carFingerprint not in [CAR.RAV4_PRIME]:
+      ret.cruiseState.nonAdaptive = cp.vl["PCM_CRUISE"]["CRUISE_STATE"] in (1, 2, 3, 4, 5, 6)
 
     ret.genericToggle = bool(cp.vl["LIGHT_STALK"]["AUTO_HIGH_BEAM"])
     ret.espDisabled = cp.vl["ESP_CONTROL"]["TC_DISABLED"] != 0
