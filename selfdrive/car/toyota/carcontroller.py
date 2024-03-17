@@ -1,5 +1,6 @@
 from cereal import car
 from openpilot.common.numpy_fast import clip
+from openpilot.common.swaglog import cloudlog
 from openpilot.selfdrive.car import apply_meas_steer_torque_limits, apply_std_steer_angle_limits, common_fault_avoidance, make_can_msg
 from openpilot.selfdrive.car.interfaces import CarControllerBase
 from openpilot.selfdrive.car.toyota import toyotacan
@@ -61,7 +62,11 @@ class CarController(CarControllerBase):
         self.secoc_lka_message_counter = 0
         self.secoc_lta_message_counter = 0
         self.secoc_prev_reset_counter = CS.secoc_synchronization['RESET_CNT']
-        # TODO: verify MAC for synch message to verify key
+
+        # Verify mac of SecOC synchronization message to ensure we have the right key
+        expected_mac = toyotacan.build_sync_mac(self.CP.secOCKey, int(CS.secoc_synchronization['TRIP_CNT']), int(CS.secoc_synchronization['RESET_CNT']))
+        if int(CS.secoc_synchronization['AUTHENTICATOR']) != expected_mac:
+          cloudlog.warning("SecOC MAC mismatch")
 
     # *** steer torque ***
     new_steer = int(round(actuators.steer * self.params.STEER_MAX))

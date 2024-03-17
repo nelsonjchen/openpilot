@@ -36,6 +36,19 @@ def secoc_add_cmac(key, trip_cnt, reset_cnt, msg_cnt, msg):
 
   return (addr, t, payload, bus)
 
+def build_sync_mac(key, trip_cnt, reset_cnt, id_=0xf):
+    id_ = struct.pack('>H', id_) # 16
+    trip_cnt = struct.pack('>H', trip_cnt) # 16
+    reset_cnt = struct.pack('>I', reset_cnt << 12)[:-1] # 20 + 4 padding
+
+    to_auth = id_ + trip_cnt + reset_cnt # SecOC 11.4.1.1 page 138
+
+    cmac = CMAC.new(key, ciphermod=AES)
+    cmac.update(to_auth)
+
+    msg = "0" + cmac.digest().hex()[:7]
+    msg = bytes.fromhex(msg)
+    return struct.unpack('>I', msg)[0]
 
 def create_steer_command(packer, steer, steer_req):
   """Creates a CAN message for the Toyota Steer Command."""
