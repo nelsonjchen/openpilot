@@ -271,7 +271,7 @@ class CAR(Platforms):
     "TOYOTA RAV4 PRIME 2021",
     [],
     CarSpecs(mass=3650. * CV.LB_TO_KG, wheelbase=2.65, steerRatio=16.88, tireStiffnessFactor=0.5533),
-    dbc_dict('toyota_rav4_prime_generated', 'toyota_adas'),
+    dbc_dict('toyota_rav4_prime_generated', 'toyota_tss2_adas'),
     flags=ToyotaFlags.TSS2 | ToyotaFlags.NO_STOP_TIMER | ToyotaFlags.NO_DSU | ToyotaFlags.SECOC,
   )
   MIRAI = ToyotaTSS2PlatformConfig(
