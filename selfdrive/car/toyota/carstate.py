@@ -34,9 +34,9 @@ class CarState(CarStateBase):
     self.cluster_min_speed = CV.KPH_TO_MS / 2.
 
     if CP.flags & ToyotaFlags.GEAR_PACKET_HYBRID.value:
-      self.shifter_values = can_define.dv["GEAR_PACKET"]["GEAR"]
-    else:
       self.shifter_values = can_define.dv["GEAR_PACKET_HYBRID"]["GEAR"]
+    else:
+      self.shifter_values = can_define.dv["GEAR_PACKET"]["GEAR"]
 
     # On cars with cp.vl["STEER_TORQUE_SENSOR"]["STEER_ANGLE"]
     # the signal is zeroed to where the steering angle is at start.
@@ -102,9 +102,6 @@ class CarState(CarStateBase):
     else:
       can_gear = int(cp.vl["GEAR_PACKET"]["GEAR"])
     ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(can_gear, None))
-
-    # Hardcode until all gear values are known
-    ret.gearShifter = car.CarState.GearShifter.drive
 
     ret.leftBlinker = cp.vl["BLINKERS_STATE"]["TURN_SIGNALS"] == 1
     ret.rightBlinker = cp.vl["BLINKERS_STATE"]["TURN_SIGNALS"] == 2
