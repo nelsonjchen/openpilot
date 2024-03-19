@@ -65,7 +65,10 @@ class CarState(CarStateBase):
     ret.brakePressed = cp.vl["BRAKE_MODULE"]["BRAKE_PRESSED"] != 0
     ret.brakeHoldActive = cp.vl["ESP_CONTROL"]["BRAKE_HOLD_ACTIVE"] == 1
 
-    if self.CP.carFingerprint not in [CAR.RAV4_PRIME]:
+    if self.CP.flags & ToyotaFlags.GEAR_PACKET_HYBRID.value:
+      ret.gas = cp.vl["GAS_PEDAL"]["GAS_PEDAL_USER"]
+      ret.gasPressed = cp.vl["GAS_PEDAL"]["GAS_PEDAL_USER"] > 0
+    else:
       ret.gasPressed = cp.vl["PCM_CRUISE"]["GAS_RELEASED"] == 0
 
     ret.wheelSpeeds = self.get_wheel_speeds(
@@ -213,6 +216,7 @@ class CarState(CarStateBase):
 
     if CP.flags & ToyotaFlags.GEAR_PACKET_HYBRID.value:
       messages.append(("GEAR_PACKET_HYBRID", 60))
+      messages.append(("GAS_PEDAL", 42))
     else:
       messages.append(("GEAR_PACKET", 1))
 
