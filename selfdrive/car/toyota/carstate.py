@@ -65,7 +65,7 @@ class CarState(CarStateBase):
     ret.brakePressed = cp.vl["BRAKE_MODULE"]["BRAKE_PRESSED"] != 0
     ret.brakeHoldActive = cp.vl["ESP_CONTROL"]["BRAKE_HOLD_ACTIVE"] == 1
 
-    if self.CP.flags & ToyotaFlags.GEAR_PACKET_HYBRID.value:
+    if self.CP.flags & ToyotaFlags.ALT_GAS_MSG.value:
       ret.gas = cp.vl["GAS_PEDAL"]["GAS_PEDAL_USER"]
       ret.gasPressed = cp.vl["GAS_PEDAL"]["GAS_PEDAL_USER"] > 0
     else:
@@ -216,9 +216,11 @@ class CarState(CarStateBase):
 
     if CP.flags & ToyotaFlags.GEAR_PACKET_HYBRID.value:
       messages.append(("GEAR_PACKET_HYBRID", 60))
-      messages.append(("GAS_PEDAL", 42))
     else:
       messages.append(("GEAR_PACKET", 1))
+
+    if CP.flags & ToyotaFlags.ALT_GAS_MSG.value:
+      messages.append(("GAS_PEDAL", 42))
 
     if CP.carFingerprint not in [CAR.MIRAI, CAR.RAV4_PRIME]:
       messages.append(("ENGINE_RPM", 42))
