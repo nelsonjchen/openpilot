@@ -55,7 +55,7 @@ class CarInterface(CarInterfaceBase):
       ret.flags |= ToyotaFlags.RADAR_CAN_FILTER.value
 
     # Detect missing GEAR_PACKET msg, but has GEAR_PACKET_HYBRID
-    # For new we also assume this correlates to having a the GAS_PEDAL message on 0x116
+    # For now we also assume this correlates to having a the GAS_PEDAL message on 0x116
     if 0x3BC not in fingerprint[0] and 0x127 in fingerprint[0] and 0x116 in fingerprint[0]:
       ret.flags |= ToyotaFlags.GEAR_PACKET_HYBRID.value
 
