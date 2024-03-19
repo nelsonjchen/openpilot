@@ -4,6 +4,7 @@ from openpilot.common.swaglog import cloudlog
 from openpilot.selfdrive.car import apply_meas_steer_torque_limits, apply_std_steer_angle_limits, common_fault_avoidance, make_can_msg
 from openpilot.selfdrive.car.interfaces import CarControllerBase
 from openpilot.selfdrive.car.toyota import toyotacan
+from openpilot.selfdrive.car.toyota import secoc
 from openpilot.selfdrive.car.toyota.values import CAR, STATIC_DSU_MSGS, NO_STOP_TIMER_CAR, TSS2_CAR, \
                                         CarControllerParams, ToyotaFlags, \
                                         UNSUPPORTED_DSU_CAR
@@ -64,7 +65,7 @@ class CarController(CarControllerBase):
         self.secoc_prev_reset_counter = CS.secoc_synchronization['RESET_CNT']
 
         # Verify mac of SecOC synchronization message to ensure we have the right key
-        expected_mac = toyotacan.build_sync_mac(self.CP.secOCKey, int(CS.secoc_synchronization['TRIP_CNT']), int(CS.secoc_synchronization['RESET_CNT']))
+        expected_mac = secoc.build_sync_mac(self.CP.secOCKey, int(CS.secoc_synchronization['TRIP_CNT']), int(CS.secoc_synchronization['RESET_CNT']))
         if int(CS.secoc_synchronization['AUTHENTICATOR']) != expected_mac:
           cloudlog.warning("SecOC MAC mismatch")
 
@@ -104,11 +105,11 @@ class CarController(CarControllerBase):
     steer_command = toyotacan.create_steer_command(self.packer, apply_steer, apply_steer_req)
     if self.CP.flags & ToyotaFlags.SECOC.value:
       # TODO: check if this slow and needs to be done by the CANPacker
-      steer_command = toyotacan.secoc_add_cmac(self.CP.secOCKey,
-                                               int(CS.secoc_synchronization['TRIP_CNT']),
-                                               int(CS.secoc_synchronization['RESET_CNT']),
-                                               self.secoc_lka_message_counter,
-                                               steer_command)
+      steer_command = secoc.add_mac(self.CP.secOCKey,
+                                    int(CS.secoc_synchronization['TRIP_CNT']),
+                                    int(CS.secoc_synchronization['RESET_CNT']),
+                                    self.secoc_lka_message_counter,
+                                    steer_command)
       self.secoc_lka_message_counter += 1
     can_sends.append(steer_command)
 
@@ -127,11 +128,11 @@ class CarController(CarControllerBase):
 
       if self.CP.flags & ToyotaFlags.SECOC.value:
         lta_steer_2 = toyotacan.create_lta_steer_command_2(self.packer, self.frame // 2)
-        lta_steer_2 = toyotacan.secoc_add_cmac(self.CP.secOCKey,
-                                               int(CS.secoc_synchronization['TRIP_CNT']),
-                                               int(CS.secoc_synchronization['RESET_CNT']),
-                                               self.secoc_lta_message_counter,
-                                               lta_steer_2)
+        lta_steer_2 = secoc.add_mac(self.CP.secOCKey,
+                                    int(CS.secoc_synchronization['TRIP_CNT']),
+                                    int(CS.secoc_synchronization['RESET_CNT']),
+                                    self.secoc_lta_message_counter,
+                                    lta_steer_2)
         self.secoc_lta_message_counter += 1
         can_sends.append(lta_steer_2)
 
