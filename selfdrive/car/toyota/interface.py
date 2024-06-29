@@ -147,7 +147,7 @@ class CarInterface(CarInterfaceBase):
 
     ret.autoResumeSng = ret.openpilotLongitudinalControl and candidate in NO_STOP_TIMER_CAR
 
-    if not ret.openpilotLongitudinalControl:
+    if not ret.openpilotLongitudinalControl or True:
       ret.safetyConfigs[0].safetyParam |= Panda.FLAG_TOYOTA_STOCK_LONGITUDINAL
 
     # min speed to enable ACC. if car can do stop and go, then set enabling speed
