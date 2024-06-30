@@ -146,8 +146,11 @@ class CarState(CarStateBase):
 
     if self.CP.carFingerprint in TSS2_CAR and not self.CP.flags & ToyotaFlags.DISABLE_RADAR.value:
       if not (self.CP.flags & ToyotaFlags.SMART_DSU.value):
-        self.acc_type = cp_acc.vl["ACC_CONTROL"]["ACC_TYPE"]
-      ret.stockFcw = bool(cp_acc.vl["PCS_HUD"]["FCW"])
+        # self.acc_type = cp_acc.vl["ACC_CONTROL"]["ACC_TYPE"]
+        pass
+      # ret.stockFcw = bool(cp_acc.vl["PCS_HUD"]["FCW"])
+      pass
+
 
     # some TSS2 cars have low speed lockout permanently set, so ignore on those cars
     # these cars are identified by an ACC_TYPE value of 2.
@@ -185,7 +188,8 @@ class CarState(CarStateBase):
       # distance button is wired to the ACC module (camera or radar)
       self.prev_distance_button = self.distance_button
       if self.CP.carFingerprint in (TSS2_CAR - RADAR_ACC_CAR):
-        self.distance_button = cp_acc.vl["ACC_CONTROL"]["DISTANCE"]
+        # self.distance_button = cp_acc.vl["ACC_CONTROL"]["DISTANCE"]
+        pass
       else:
         self.distance_button = cp.vl["SDSU"]["FD_BUTTON"]
 
@@ -232,13 +236,14 @@ class CarState(CarStateBase):
       messages.append(("BSM", 1))
 
     if CP.carFingerprint in RADAR_ACC_CAR and not CP.flags & ToyotaFlags.DISABLE_RADAR.value:
-      if not CP.flags & ToyotaFlags.SMART_DSU.value:
-        messages += [
-          ("ACC_CONTROL", 33),
-        ]
-      messages += [
-        ("PCS_HUD", 1),
-      ]
+      # if not CP.flags & ToyotaFlags.SMART_DSU.value:
+      #   messages += [
+      #     ("ACC_CONTROL", 33),
+      #   ]
+      # messages += [
+      #   ("PCS_HUD", 1),
+      # ]
+      pass
 
     if CP.carFingerprint not in (TSS2_CAR - RADAR_ACC_CAR) and not CP.enableDsu and not CP.flags & ToyotaFlags.DISABLE_RADAR.value:
       messages += [
@@ -268,8 +273,8 @@ class CarState(CarStateBase):
 
     if CP.carFingerprint in (TSS2_CAR - RADAR_ACC_CAR):
       messages += [
-        ("ACC_CONTROL", 33),
-        ("PCS_HUD", 1),
+        # ("ACC_CONTROL", 33),
+        # ("PCS_HUD", 1),
       ]
 
       # TODO: Figure out new layout of the PRE_COLLISION message
