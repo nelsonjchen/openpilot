@@ -265,6 +265,12 @@ class CAR(Platforms):
     dbc_dict('toyota_tnga_k_pt_generated', 'toyota_adas'),
     flags=ToyotaFlags.NO_STOP_TIMER,
   )
+  TOYOTA_YARIS_TSS2_2020 = PlatformConfig(
+    [ToyotaCarDocs("Toyota Yaris 2020-EU")],
+    CarSpecs(mass=1836. * CV.LB_TO_KG, wheelbase=2.70, steerRatio=13.0, tireStiffnessFactor=1.0),
+    dbc_dict('toyota_rav4_prime_generated', 'toyota_tss2_adas'),
+    flags=ToyotaFlags.TSS2 | ToyotaFlags.NO_STOP_TIMER | ToyotaFlags.NO_DSU | ToyotaFlags.SECOC | ToyotaFlags.ALT_GAS_MSG | ToyotaFlags.GEAR_PACKET_HYBRID,
+  )
 
   # Lexus
   LEXUS_CTH = PlatformConfig(
